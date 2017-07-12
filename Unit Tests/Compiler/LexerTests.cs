@@ -349,7 +349,7 @@ namespace UnitTests
             else if (value is double)
                 value2 = (double)value;
             else
-                throw new ArgumentException(nameof(value));
+                throw new ArgumentException("value must be a double or an int.", nameof(value));
 
             var output = new System.Text.StringBuilder();
 

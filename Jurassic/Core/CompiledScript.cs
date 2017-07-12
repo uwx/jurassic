@@ -61,7 +61,11 @@ namespace Jurassic
         /// <exception cref="ArgumentNullException"> <paramref name="engine"/> is a <c>null</c> reference. </exception>
         public void Execute(ScriptEngine engine)
         {
+            // Excute the compiled script.
             methodGen.Execute(engine);
+
+            // Execute pending jobs, if any.
+            engine.ExecuteJobQueues();
         }
     }
 }

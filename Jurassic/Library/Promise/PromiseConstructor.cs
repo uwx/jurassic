@@ -42,7 +42,9 @@ namespace Jurassic.Library
         /// <summary>
         /// Creates a new promise instance.
         /// </summary>
-        /// <param name="executor">  </param>
+        /// <param name="executor"> A function that has the arguments resolve and reject. This
+        /// function is executed immediately, passing resolve and reject functions that resolve or
+        /// reject the promise. </param>
         /// <returns></returns>
         [JSConstructorFunction]
         public PromiseInstance Construct(FunctionInstance executor)

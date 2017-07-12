@@ -41,11 +41,11 @@ namespace Jurassic.Library
 			switch (args.Length)
 			{
 				case 0:
-					throw new JavaScriptException(engine, ErrorType.TypeError, "undefined cannot be converted to an object");
+					return ((PromiseInstance)thisObj).Then(Undefined.Value, Undefined.Value);
 				case 1:
-					throw new JavaScriptException(engine, ErrorType.TypeError, "undefined cannot be converted to an object");
+					return ((PromiseInstance)thisObj).Then(args[0], Undefined.Value);
 				default:
-					return ((PromiseInstance)thisObj).Then(TypeConverter.ToObject<FunctionInstance>(engine, args[0]), TypeConverter.ToObject<FunctionInstance>(engine, args[1]));
+					return ((PromiseInstance)thisObj).Then(args[0], args[1]);
 			}
 		}
 	}

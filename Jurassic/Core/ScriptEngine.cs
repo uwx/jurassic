@@ -754,6 +754,9 @@ namespace Jurassic
             this.ExecutionStarted?.Invoke(this, EventArgs.Empty);
             var result = methodGen.Execute(this);
 
+            // Execute pending jobs, if any.
+            ExecuteJobQueues();
+
             // Normalize the result (convert null to Undefined, double to int, etc).
             return TypeUtilities.NormalizeValue(result);
         }
@@ -824,6 +827,9 @@ namespace Jurassic
             {
                 throw new JavaScriptException(this, ErrorType.SyntaxError, ex.Message, ex.LineNumber, ex.SourcePath);
             }
+
+            // Execute pending jobs, if any.
+            ExecuteJobQueues();
         }
 
         /// <summary>
@@ -1051,6 +1057,38 @@ namespace Jurassic
             SetGlobalValue(functionName, new ClrFunction(this.Function.InstancePrototype, functionDelegate, functionName));
         }
 
+
+
+        //     JOBS AND JOB QUEUES
+        //_________________________________________________________________________________________
+
+        private List<Action> pendingJobs;
+
+        /// <summary>
+        /// Adds a job to the list of jobs to run after the next code execution.
+        /// </summary>
+        internal void EnqueueJob(Action action)
+        {
+            if (action == null)
+                throw new ArgumentNullException("action");
+            if (pendingJobs == null)
+                pendingJobs = new List<Action>();
+            pendingJobs.Add(action);
+        }
+
+        /// <summary>
+        /// Executes pending jobs, in order.
+        /// </summary>
+        internal void ExecuteJobQueues()
+        {
+            if (pendingJobs != null)
+            {
+                foreach (var job in pendingJobs)
+                {
+                    job();
+                }
+            }
+        }
 
 
 

@@ -12,7 +12,6 @@ namespace UnitTests
     public class PromiseTests : TestBase
     {
         [TestMethod]
-        [Ignore]    // not supported yet.
         public void Constructor()
         {
             // Call
@@ -36,6 +35,25 @@ namespace UnitTests
             Assert.AreEqual(1, Evaluate("Promise.length"));
         }
 
-        // TODO: Promise.all, Promise.race etc.
+        [TestMethod]
+        public void then()
+        {
+            Assert.AreEqual(0, Evaluate(@"
+                var p = new Promise(function(resolve, reject) {
+                    resolve(1);
+                });
+                var result = 0;
+                p.then(function (val) {
+                    result = val;
+                });
+                result;"));
+            Assert.AreEqual(1, Evaluate("result"));
+        }
+
+        [TestMethod]
+        public void all()
+        {
+
+        }
     }
 }

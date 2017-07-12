@@ -179,6 +179,8 @@
     <Compile Include="Library\Function\UserDefinedFunction.cs" />
     <Compile Include="Library\Promise\PromiseConstructor.cs" />
     <Compile Include="Library\Promise\PromiseConstructor.g.cs" />
+    <Compile Include="Library\Promise\PromiseCapability.cs" />
+    <Compile Include="Library\Promise\PromiseReaction.cs" />
     <Compile Include="Library\Promise\PromiseInstance.cs" />
     <Compile Include="Library\Promise\PromiseInstance.g.cs" />
     <Compile Include="Library\WeakSet\WeakSetConstructor.cs" />

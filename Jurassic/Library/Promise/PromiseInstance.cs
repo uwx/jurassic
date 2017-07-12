@@ -24,11 +24,11 @@ namespace Jurassic.Library
 
         // 	A list of PromiseReaction records to be processed when/if the promise transitions
         // from the Pending state to the Fulfilled state.
-        private readonly List<object> fulfillReactions = new List<object>();
+        private readonly List<PromiseReaction> fulfillReactions = new List<PromiseReaction>();
 
         // 	A list of PromiseReaction records to be processed when/if the promise transitions
         // from the Pending state to the Rejected state.
-        private readonly List<object> rejectReactions = new List<object>();
+        private readonly List<PromiseReaction> rejectReactions = new List<PromiseReaction>();
 
 
         /// <summary>
@@ -99,9 +99,72 @@ namespace Jurassic.Library
         /// has one argument, the rejection reason. </param>
         /// <returns></returns>
         [JSInternalFunction(Name = "then")]
-        public PromiseInstance Then(FunctionInstance onFulfilled, FunctionInstance onRejected)
+        public PromiseInstance Then(object onFulfilled, object onRejected)
         {
-            throw new NotImplementedException();
+            // Note: parameters cannot be of type FunctionInstance because then they will be
+            // rejected if the caller passes in too few arguments, or explicitly passes in
+            // a value of the wrong type.
+
+            throw new NotSupportedException();
+
+            //var promise = new PromiseInstance(InstancePrototype, );
+            //
+            //var capabilities = new PromiseCapability();
+            //capabilities.Promise = this;
+            //capabilities.Resolve = 
+            //capabilities.Reject
+            //
+            //FunctionInstance onFulfilledFunction = onFulfilled as FunctionInstance;
+            //if (onFulfilledFunction == null)
+            //    onFulfilledFunction = Engine.FunctionInstancePrototype; // Identity.
+            //var fulfillReaction = new PromiseReaction() { Capabilities = capabilities, Handler = onFulfilledFunction };
+            //
+            //FunctionInstance onRejectedFunction = onRejected as FunctionInstance;
+            //if (onRejectedFunction == null)
+            //    onRejectedFunction = new ClrStubFunction(Engine.FunctionInstancePrototype, (engine, thisObj, param) =>
+            //    {
+            //        throw new JavaScriptException(engine, ErrorType.TypeError, "");
+            //    });
+            //var rejectReaction = new PromiseReaction() { Capabilities = capabilities, Handler = onRejectedFunction };
+            //
+            //
+            //
+            //if (state == PromiseState.Pending)
+            //{
+            //    fulfillReactions.Add(fulfillReaction);
+            //    rejectReactions.Add(rejectReaction);
+            //}
+            //else if (state == PromiseState.Fulfilled)
+            //{
+            //    // a. Let value be the value of promise's [[PromiseResult]] internal slot.
+            //    // b. Perform EnqueueJob("PromiseJobs", PromiseReactionJob, «fulfillReaction, value»).
+            //    Engine.EnqueueJob(() => PromiseReactionJob(fulfillReaction, this.result));
+            //}
+            //else if (state == PromiseState.Rejected)
+            //{
+            //    // a. Let reason be the value of promise's [[PromiseResult]] internal slot.
+            //    // b. Perform EnqueueJob("PromiseJobs", PromiseReactionJob, «rejectReaction, reason»).
+            //    Engine.EnqueueJob(() => PromiseReactionJob(rejectReaction, this.result));
+            //}
+            //
+            //return new PromiseInstance(this.Prototype, null);
+        }
+
+        private static void PromiseReactionJob(PromiseReaction reaction, object argument)
+        {
+            try
+            {
+                // Call the handler.
+                var handlerResult = reaction.Handler.Call(Undefined.Value, argument);
+
+                // Success; resolve the promise.
+                reaction.Capabilities.Resolve.Call(Undefined.Value, handlerResult);
+            }
+            catch (JavaScriptException ex)
+            {
+                // The handler failed; reject the promise.
+                reaction.Capabilities.Reject.Call(Undefined.Value, ex.ErrorObject);
+            }
         }
     }
 }
