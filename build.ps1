@@ -1,6 +1,3 @@
-# Restore NuGet packages
-dotnet restore -v Minimal
-# Build
-dotnet build Jurassic.sln -v Minimal -c Release --version-suffix "$VERSION"
-# Package
-dotnet pack Jurassic.sln -v Minimal -c Release -o "$dir" --no-build --version-suffix "$VERSION"
+dotnet restore
+msbuild "C:\projects\dsp\Jurassic.sln" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+dotnet test "Unit Tests\Unit Tests.csproj" -c Release
